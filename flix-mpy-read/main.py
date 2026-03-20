@@ -33,6 +33,7 @@ Flix-mpy: ESP32 四轴飞行器固件 - MicroPython 实现
 
 import math
 import time
+from typing import List, Optional
 
 t = float('nan')
 dt = 0.0
@@ -51,11 +52,11 @@ control_mode = float('nan')
 control_time = float('nan')
 
 landed = False
-motors = [0.0, 0.0, 0.0, 0.0]
+motors: List[float] = [0.0, 0.0, 0.0, 0.0]
 
 _initialized = False
 
-def _init_globals():
+def _init_globals() -> None:
     """初始化全局变量对象 (Vector 和 Quaternion 实例)"""
     global gyro, acc, rates, attitude
     from lib.vector import Vector
@@ -66,7 +67,7 @@ def _init_globals():
     rates = Vector()
     attitude = Quaternion()
 
-def setup():
+def setup() -> None:
     """
     初始化所有硬件和软件模块。
     
@@ -109,7 +110,7 @@ def setup():
     _initialized = True
     print("Initializing complete")
 
-def step():
+def step() -> None:
     """
     更新时间变量。
     
@@ -126,7 +127,7 @@ def step():
     
     _compute_loop_rate()
 
-def _compute_loop_rate():
+def _compute_loop_rate() -> None:
     """计算主循环频率 (每秒更新一次)"""
     global loop_rate
     
@@ -138,7 +139,7 @@ def _compute_loop_rate():
         static['window_start'] = t
         static['count'] = 0
 
-def loop():
+def loop() -> None:
     """
     主循环单次迭代。
     
@@ -167,7 +168,7 @@ def loop():
     log.log_data()
     parameters.sync()
 
-def run():
+def run() -> None:
     """
     启动飞行器主程序。
     
