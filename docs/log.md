@@ -1,34 +1,34 @@
-# Log analysis
+# 日志分析
 
-Flix quadcopter uses RAM to store flight log data. The default log capacity is 10 seconds at 100 Hz. This configuration can be adjusted in the `log.ino` file.
+Flix 四旋翼飞行器使用 RAM 存储飞行日志数据。默认日志容量为 100 Hz 下 10 秒。此配置可以在 `log.ino` 文件中调整。
 
-To perform log analysis, you need to download the flight log. To to that, ensure you're connected to the drone using Wi-Fi and run the following command:
+要执行日志分析，您需要下载飞行日志。为此，请确保您通过 Wi-Fi 连接到飞行器并运行以下命令：
 
 ```bash
 make log
 ```
 
-Logs are stored in `tools/log/*.csv` files.
+日志存储在 `tools/log/*.csv` 文件中。
 
-## Analysis
+## 分析
 
 ### PlotJuggler
 
-The recommended tool for log analysis is PlotJuggler.
+日志分析的推荐工具是 PlotJuggler。
 
 <img src="img/plotjuggler.png" width="500">
 
-1. Install PlotJuggler using the [official instructions](https://github.com/facontidavide/PlotJuggler?tab=readme-ov-file#installation).
+1. 使用[官方说明](https://github.com/facontidavide/PlotJuggler?tab=readme-ov-file#installation)安装 PlotJuggler。
 
-2. Run PlotJuggler and drag'n'drop the downloaded log file there. Choose `t` column to be used as X axis.
+2. 运行 PlotJuggler 并将下载的日志文件拖放到那里。选择 `t` 列用作 X 轴。
 
-   You can open the most recent downloaded file using the command:
+   您可以使用以下命令打开最近下载的文件：
 
    ```bash
    make plot
    ```
 
-   You can perform both log download and run PlotJuggler in one command:
+   您可以使用一个命令同时执行日志下载和运行 PlotJuggler：
 
    ```bash
    make log plot
@@ -36,33 +36,33 @@ The recommended tool for log analysis is PlotJuggler.
 
 ### FlightPlot
 
-FlightPlot is a powerful tool for analyzing logs in [ULog format](https://docs.px4.io/main/en/dev_log/ulog_file_format.html). This format is used in PX4 and ArduPilot flight software.
+FlightPlot 是一个用于分析 [ULog 格式](https://docs.px4.io/main/en/dev_log/ulog_file_format.html)日志的强大工具。此格式用于 PX4 和 ArduPilot 飞行软件。
 
 <img src="img/flightplot.png" width="500">
 
-1. [Install FlightPlot](https://github.com/PX4/FlightPlot).
-2. Flix repository contains a tool for converting CSV logs to ULog format. Build the tool using [the instructions](../tools/csv_to_ulog/README.md) and convert the log you want to analyze.
-3. Run FlightPlot and drag'n'drop the converted ULog-file there.
+1. [安装 FlightPlot](https://github.com/PX4/FlightPlot)。
+2. Flix 仓库包含一个将 CSV 日志转换为 ULog 格式的工具。使用[说明](../tools/csv_to_ulog/README.md)构建工具并转换您要分析的日志。
+3. 运行 FlightPlot 并将转换后的 ULog 文件拖放到那里。
 
 ### Foxglove Studio
 
-Foxglove is a tool for visualizing and analyzing robotics data with very rich functionality. It can import various formats, but mainly focuses on its own format, called [MCAP](https://mcap.dev).
+Foxglove 是一个用于可视化和分析机器人数据的工具，具有非常丰富的功能。它可以导入各种格式，但主要关注自己的格式，称为 [MCAP](https://mcap.dev)。
 
 <img src="img/foxglove.png" width="500">
 
-1. Install Foxglove Studio from the [official website](https://foxglove.dev/download).
+1. 从[官方网站](https://foxglove.dev/download)安装 Foxglove Studio。
 
-2. Flix repository contains a tool for converting CSV logs to MCAP format. First, install its dependencies:
+2. Flix 仓库包含一个将 CSV 日志转换为 MCAP 格式的工具。首先，安装其依赖项：
 
    ```bash
    cd tools
    pip install -r requirements.txt
    ```
 
-3. Convert the log you want to analyze:
+3. 转换您要分析的日志：
 
    ```bash
    csv_to_mcap.py log_file.csv
    ```
 
-4. Open the log in Foxglove Studio using *Open local file* command.
+4. 使用*打开本地文件*命令在 Foxglove Studio 中打开日志。

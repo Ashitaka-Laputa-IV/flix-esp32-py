@@ -1,2 +1,2 @@
 <!-- markdownlint-disable MD041 -->
-Build instructions are moved to [usage article](usage.md).
+构建说明已移至[使用说明文章](usage.md)。

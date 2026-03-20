@@ -1,304 +1,304 @@
-# Usage: build, setup and flight
+# 使用：构建、设置和飞行
 
-To fly Flix quadcopter, you need to build the firmware, upload it to the ESP32 board, and set up the drone for flight.
+要让 Flix 四旋翼飞行器飞行，您需要构建固件，将其上传到 ESP32 板，并设置飞行器进行飞行。
 
-To get the firmware sources, clone the repository using git:
+要获取固件源代码，使用 git 克隆仓库：
 
 ```bash
 git clone https://github.com/okalachev/flix.git && cd flix
 ```
 
-Beginners can [download the source code as a ZIP archive](https://github.com/okalachev/flix/archive/refs/heads/master.zip).
+初学者可以[下载源代码为 ZIP 压缩包](https://github.com/okalachev/flix/archive/refs/heads/master.zip)。
 
-## Building the firmware
+## 构建固件
 
-You can build and upload the firmware using either **Arduino IDE** (easier for beginners) or **command line**.
+您可以使用 **Arduino IDE**（对初学者更容易）或**命令行**来构建和上传固件。
 
-### Arduino IDE (Windows, Linux, macOS)
+### Arduino IDE（Windows、Linux、macOS）
 
-<img src="img/arduino-ide.png" width="400" alt="Flix firmware open in Arduino IDE">
+<img src="img/arduino-ide.png" width="400" alt="在 Arduino IDE 中打开的 Flix 固件">
 
-1. Install [Arduino IDE](https://www.arduino.cc/en/software) (version 2 is recommended).
-2. *Windows users might need to install [USB to UART bridge driver from Silicon Labs](https://www.silabs.com/developers/usb-to-uart-bridge-vcp-drivers).*
-3. Install ESP32 core, version 3.3.6. See the [official Espressif's instructions](https://docs.espressif.com/projects/arduino-esp32/en/latest/installing.html#installing-using-arduino-ide) on installing ESP32 Core in Arduino IDE.
-4. Install the following libraries using [Library Manager](https://docs.arduino.cc/software/ide-v2/tutorials/ide-v2-installing-a-library):
-   * `FlixPeriph`, the latest version.
-   * `MAVLink`, version 2.0.25.
-5. Open the `flix/flix.ino` sketch from downloaded firmware sources in Arduino IDE.
-6. Connect your ESP32 board to the computer and choose correct board type in Arduino IDE (*WEMOS D1 MINI ESP32* for ESP32 Mini) and the port.
-7. [Build and upload](https://docs.arduino.cc/software/ide-v2/tutorials/getting-started/ide-v2-uploading-a-sketch) the firmware using Arduino IDE.
+1. 安装 [Arduino IDE](https://www.arduino.cc/en/software)（推荐版本 2）。
+2. *Windows 用户可能需要安装 [Silicon Labs 的 USB 到 UART 桥接驱动程序](https://www.silabs.com/developers/usb-to-uart-bridge-vcp-drivers)。*
+3. 安装 ESP32 核心，版本 3.3.6。请参阅 Espressif 的[官方说明](https://docs.espressif.com/projects/arduino-esp32/en/latest/installing.html#installing-using-arduino-ide)了解如何在 Arduino IDE 中安装 ESP32 核心。
+4. 使用[库管理器](https://docs.arduino.cc/software/ide-v2/tutorials/ide-v2-installing-a-library)安装以下库：
+   * `FlixPeriph`，最新版本。
+   * `MAVLink`，版本 2.0.25。
+5. 在 Arduino IDE 中从下载的固件源代码中打开 `flix/flix.ino` 草图。
+6. 将 ESP32 板连接到计算机，在 Arduino IDE 中选择正确的板类型（ESP32 Mini 选择 *WEMOS D1 MINI ESP32*）和端口。
+7. 使用 Arduino IDE [构建和上传](https://docs.arduino.cc/software/ide-v2/tutorials/getting-started/ide-v2-uploading-a-sketch)固件。
 
-### Command line (Windows, Linux, macOS)
+### 命令行（Windows、Linux、macOS）
 
-1. [Install Arduino CLI](https://arduino.github.io/arduino-cli/installation/).
+1. [安装 Arduino CLI](https://arduino.github.io/arduino-cli/installation/)。
 
-   On Linux, install it like this:
+   在 Linux 上，这样安装：
 
    ```bash
    curl -fsSL https://raw.githubusercontent.com/arduino/arduino-cli/master/install.sh | BINDIR=~/.local/bin sh
    ```
 
-2. Windows users might need to install [USB to UART bridge driver from Silicon Labs](https://www.silabs.com/developers/usb-to-uart-bridge-vcp-drivers).
-3. Compile the firmware using `make`. Arduino dependencies will be installed automatically:
+2. Windows 用户可能需要安装 [Silicon Labs 的 USB 到 UART 桥接驱动程序](https://www.silabs.com/developers/usb-to-uart-bridge-vcp-drivers)。
+3. 使用 `make` 编译固件。Arduino 依赖项将自动安装：
 
    ```bash
    make
    ```
 
-   You can flash the firmware to the board using command:
+   您可以使用以下命令将固件刷写到板：
 
    ```bash
    make upload
    ```
 
-   You can also compile the firmware, upload it and start serial port monitoring using command:
+   您还可以使用以下命令编译固件、上传并启动串口监视：
 
    ```bash
    make upload monitor
    ```
 
-See other available Make commands in [Makefile](../Makefile).
+在 [Makefile](../Makefile) 中查看其他可用的 Make 命令。
 
 > [!TIP]
-> You can test the firmware on a bare ESP32 board without connecting IMU and other peripherals. The Wi-Fi network `flix` should appear and all the basic functionality including console and QGroundControl connection should work.
+> 您可以在没有连接 IMU 和其他外设的裸 ESP32 板上测试固件。`flix` Wi-Fi 网络应该出现，包括控制台和 QGroundControl 连接在内的所有基本功能都应该工作。
 
-## Before first flight
+## 首次飞行前
 
-### Choose the IMU model
+### 选择 IMU 型号
 
-In case if using different IMU model than MPU9250, change `imu` variable declaration in the `imu.ino`:
+如果使用与 MPU9250 不同的 IMU 型号，请在 `imu.ino` 中更改 `imu` 变量声明：
 
 ```cpp
-ICM20948 imu(SPI);  // For ICM-20948
-MPU6050 imu(Wire);  // For MPU-6050
+ICM20948 imu(SPI);  // 对于 ICM-20948
+MPU6050 imu(Wire);  // 对于 MPU-6050
 ```
 
-### Connect using QGroundControl
+### 使用 QGroundControl 连接
 
-QGroundControl is a ground control station software that can be used to monitor and control the drone.
+QGroundControl 是一个地面站软件，可用于监视和控制飞行器。
 
-1. Install mobile or desktop version of [QGroundControl](https://docs.qgroundcontrol.com/master/en/qgc-user-guide/getting_started/download_and_install.html).
-2. Power up the drone.
-3. Connect your computer or smartphone to the appeared `flix` Wi-Fi network (password: `flixwifi`).
-4. Launch QGroundControl app. It should connect and begin showing the drone's telemetry automatically.
+1. 安装 [QGroundControl](https://docs.qgroundcontrol.com/master/en/qgc-user-guide/getting_started/download_and_install.html)的移动或桌面版本。
+2. 为飞行器供电。
+3. 将计算机或智能手机连接到出现的 `flix` Wi-Fi 网络（密码：`flixwifi`）。
+4. 启动 QGroundControl 应用程序。它应该连接并开始自动显示飞行器的遥测数据。
 
-### Access console
+### 访问控制台
 
-The console is a command line interface (CLI) that allows to interact with the drone, change parameters, and perform various actions. There are two ways of accessing the console: using **serial port** or using **QGroundControl (wirelessly)**.
+控制台是一个命令行界面（CLI），允许与飞行器交互、更改参数和执行各种操作。有两种访问控制台的方法：使用**串口**或使用**QGroundControl（无线）**。
 
-To access the console using serial port:
+要使用串口访问控制台：
 
-1. Connect the ESP32 board to the computer using USB cable.
-2. Open Serial Monitor in Arduino IDE (or use `make monitor` in the command line).
-3. In Arduino IDE, make sure the baudrate is set to 115200.
+1. 使用 USB 电缆将 ESP32 板连接到计算机。
+2. 在 Arduino IDE 中打开串口监视器（或在命令行中使用 `make monitor`）。
+3. 在 Arduino IDE 中，确保波特率设置为 115200。
 
-To access the console using QGroundControl:
+要使用 QGroundControl 访问控制台：
 
-1. Connect to the drone using QGroundControl app.
-2. Go to the QGroundControl menu ⇒ *Vehicle Setup* ⇒ *Analyze Tools* ⇒ *MAVLink Console*.
+1. 使用 QGroundControl 应用程序连接到飞行器。
+2. 转到 QGroundControl 菜单 ⇒ *Vehicle Setup* ⇒ *Analyze Tools* ⇒ *MAVLink Console*。
 
 <img src="img/cli.png" width="400">
 
 > [!TIP]
-> Use `help` command to see the list of available commands.
+> 使用 `help` 命令查看可用命令列表。
 
-### Access parameters
+### 访问参数
 
-The drone is configured using parameters. To access and modify them, go to the QGroundControl menu ⇒ *Vehicle Setup* ⇒ *Parameters*:
+飞行器使用参数进行配置。要访问和修改它们，请转到 QGroundControl 菜单 ⇒ *Vehicle Setup* ⇒ *Parameters*：
 
 <img src="img/parameters.png" width="400">
 
-You can also work with parameters using `p` command in the console. Parameter names are case-insensitive.
+您还可以使用控制台中的 `p` 命令处理参数。参数名称不区分大小写。
 
-### Define IMU orientation
+### 定义 IMU 方向
 
-Use parameters, to define the IMU board axes orientation relative to the drone's axes: `IMU_ROT_ROLL`, `IMU_ROT_PITCH`, and `IMU_ROT_YAW`.
+使用参数定义 IMU 板轴相对于飞行器轴的方向：`IMU_ROT_ROLL`、`IMU_ROT_PITCH` 和 `IMU_ROT_YAW`。
 
-The drone has *X* axis pointing forward, *Y* axis pointing left, and *Z* axis pointing up, and the supported IMU boards have *X* axis pointing to the pins side and *Z* axis pointing up from the component side:
+飞行器的 *X* 轴指向前方，*Y* 轴指向左侧，*Z* 轴指向上方，支持的 IMU 板的 *X* 轴指向引脚侧，*Z* 轴从组件侧指向上方：
 
 <img src="img/imu-axes.png" width="200">
 
-Use the following table to set the parameters for common IMU orientations:
+使用下表为常见 IMU 方向设置参数：
 
-|Orientation|Parameters|Orientation|Parameters|
+|方向|参数|方向|参数|
 |:-:|-|-|-|
 |<img src="img/imu-rot-1.png" width="180">|`IMU_ROT_ROLL` = 0<br>`IMU_ROT_PITCH` = 0<br>`IMU_ROT_YAW` = 0    |<img src="img/imu-rot-5.png" width="180">|`IMU_ROT_ROLL` = 3.142<br>`IMU_ROT_PITCH` = 0<br>`IMU_ROT_YAW` = 0|
 |<img src="img/imu-rot-2.png" width="180">|`IMU_ROT_ROLL` = 0<br>`IMU_ROT_PITCH` = 0<br>`IMU_ROT_YAW` = 1.571|<img src="img/imu-rot-6.png" width="180">|`IMU_ROT_ROLL` = 3.142<br>`IMU_ROT_PITCH` = 0<br>`IMU_ROT_YAW` = -1.571|
 |<img src="img/imu-rot-3.png" width="180">|`IMU_ROT_ROLL` = 0<br>`IMU_ROT_PITCH` = 0<br>`IMU_ROT_YAW` = 3.142|<img src="img/imu-rot-7.png" width="180">|`IMU_ROT_ROLL` = 3.142<br>`IMU_ROT_PITCH` = 0<br>`IMU_ROT_YAW` = 3.142|
-|<img src="img/imu-rot-4.png" width="180"><br>☑️ **Default**|<br>`IMU_ROT_ROLL` = 0<br>`IMU_ROT_PITCH` = 0<br>`IMU_ROT_YAW` = -1.571|<img src="img/imu-rot-8.png" width="180">|`IMU_ROT_ROLL` = 3.142<br>`IMU_ROT_PITCH` = 0<br>`IMU_ROT_YAW` = 1.571|
+|<img src="img/imu-rot-4.png" width="180"><br>☑️ **默认**|<br>`IMU_ROT_ROLL` = 0<br>`IMU_ROT_PITCH` = 0<br>`IMU_ROT_YAW` = -1.571|<img src="img/imu-rot-8.png" width="180">|`IMU_ROT_ROLL` = 3.142<br>`IMU_ROT_PITCH` = 0<br>`IMU_ROT_YAW` = 1.571|
 
-### Calibrate accelerometer
+### 校准加速度计
 
-Before flight you need to calibrate the accelerometer:
+飞行前需要校准加速度计：
 
-1. Access the console using QGroundControl (recommended) or Serial Monitor.
-2. Type `ca` command there and follow the instructions.
+1. 使用 QGroundControl（推荐）或串口监视器访问控制台。
+2. 在那里输入 `ca` 命令并按照说明操作。
 
-### Setup motors
+### 设置电机
 
-If using non-default motor pins, set the pin numbers using the parameters: `MOTOR_PIN_FL`, `MOTOR_PIN_FR`, `MOTOR_PIN_RL`, `MOTOR_PIN_RR` (front-left, front-right, rear-left, rear-right respectively).
+如果使用非默认电机引脚，请使用参数设置引脚编号：`MOTOR_PIN_FL`、`MOTOR_PIN_FR`、`MOTOR_PIN_RL`、`MOTOR_PIN_RR`（分别对应前左、前右、后左、后右）。
 
-If using brushless motors and ESCs:
+如果使用无刷电机和 ESC：
 
-1. Set the appropriate PWM using the parameters: `MOT_PWM_STOP`, `MOT_PWM_MIN`, and `MOT_PWM_MAX` (1000, 1000, and 2000 is typical).
-2. Decrease the PWM frequency using the `MOT_PWM_FREQ` parameter (400 is typical).
+1. 使用参数设置适当的 PWM：`MOT_PWM_STOP`、`MOT_PWM_MIN` 和 `MOT_PWM_MAX`（1000、1000 和 2000 是典型的）。
+2. 使用 `MOT_PWM_FREQ` 参数降低 PWM 频率（400 是典型的）。
 
-Reboot the drone to apply the changes.
+重新启动飞行器以应用更改。
 
 > [!CAUTION]
-> **Remove the props when configuring the motors!** If improperly configured, you may not be able to stop them.
+> **配置电机时请卸下螺旋桨！** 如果配置不当，您可能无法停止它们。
 
-### Important: check everything works
+### 重要：检查一切是否正常
 
-1. Check the IMU is working: perform `imu` command in the console and check the output:
+1. 检查 IMU 是否工作：在控制台中执行 `imu` 命令并检查输出：
 
-   * The `status` field should be `OK`.
-   * The `rate` field should be about 1000 (Hz).
-   * The `accel` and `gyro` fields should change as you move the drone.
-   * The `accel bias` and `accel scale` fields should contain calibration parameters (not zeros and ones).
-   * The `gyro bias` field should contain estimated gyro bias (not zeros).
-   * The `landed` field should be `1` when the drone is still on the ground and `0` when you lift it up.
+   * `status` 字段应为 `OK`。
+   * `rate` 字段应约为 1000（Hz）。
+   * 当您移动飞行器时，`accel` 和 `gyro` 字段应该改变。
+   * `accel bias` 和 `accel scale` 字段应包含校准参数（不是零和一）。
+   * `gyro bias` 字段应包含估计的陀螺仪偏置（不是零）。
+   * 当飞行器仍在地面时，`landed` 字段应为 `1`，当您将其抬起时应为 `0`。
 
-2. Check the attitude estimation: connect to the drone using QGroundControl, rotate the drone in different orientations and check if the attitude estimation shown in QGroundControl is correct. Compare your attitude indicator (in the *large vertical* mode) to the video:
+2. 检查姿态估计：使用 QGroundControl 连接到飞行器，在不同方向旋转飞行器并检查 QGroundControl 中显示的姿态估计是否正确。将您的姿态指示器（在*大垂直*模式下）与视频进行比较：
 
     <a href="https://youtu.be/yVRN23-GISU"><img width=300 src="https://i3.ytimg.com/vi/yVRN23-GISU/maxresdefault.jpg"></a>
 
-3. Perform motor tests. Use the following commands **— remove the propellers before running the tests!**
+3. 执行电机测试。使用以下命令 **— 运行测试前请卸下螺旋桨！**
 
-   * `mfr` — rotate front right motor (counter-clockwise).
-   * `mfl` — rotate front left motor (clockwise).
-   * `mrl` — rotate rear left motor (counter-clockwise).
-   * `mrr` — rotate rear right motor (clockwise).
+   * `mfr` — 旋转前右电机（逆时针）。
+   * `mfl` — 旋转前左电机（顺时针）。
+   * `mrl` — 旋转后左电机（逆时针）。
+   * `mrr` — 旋转后右电机（顺时针）。
 
-   Make sure rotation directions and propeller types match the following diagram:
+   确保旋转方向和螺旋桨类型与下图匹配：
 
    <img src="img/motors.svg" width=200>
 
 > [!WARNING]
-> Never run the motors when powering the drone from USB, always use the battery for that.
+> 从 USB 为飞行器供电时永远不要运行电机，始终使用电池。
 
-## Setup remote control
+## 设置遥控器
 
-There are several ways to control the drone's flight: using **smartphone** (Wi-Fi), using **SBUS remote control**, or using **USB remote control** (Wi-Fi).
+有几种控制飞行器飞行的方法：使用**智能手机**（Wi-Fi）、使用**SBUS 遥控器**或使用**USB 遥控器**（Wi-Fi）。
 
-### Control with a smartphone
+### 使用智能手机控制
 
-1. Install [QGroundControl mobile app](https://docs.qgroundcontrol.com/master/en/qgc-user-guide/getting_started/download_and_install.html#android) on your smartphone.
-2. Power the drone using the battery.
-3. Connect your smartphone to the appeared `flix` Wi-Fi network (password: `flixwifi`).
-4. Open QGroundControl app. It should connect and begin showing the drone's telemetry automatically.
-5. Go to the settings and enable *Virtual Joystick*. *Auto-Center Throttle* setting **should be disabled**.
-6. Use the virtual joystick to fly the drone!
+1. 在智能手机上安装 [QGroundControl 移动应用程序](https://docs.qgroundcontrol.com/master/en/qgc-user-guide/getting_started/download_and_install.html#android)。
+2. 使用电池为飞行器供电。
+3. 将智能手机连接到出现的 `flix` Wi-Fi 网络（密码：`flixwifi`）。
+4. 打开 QGroundControl 应用程序。它应该连接并开始自动显示飞行器的遥测数据。
+5. 转到设置并启用*虚拟摇杆*。*自动居中油门*设置**应该禁用**。
+6. 使用虚拟摇杆飞行飞行器！
 
 > [!TIP]
-> Decrease `CTL_TILT_MAX` parameter when flying using the smartphone to make the controls less sensitive.
+> 使用智能手机飞行时降低 `CTL_TILT_MAX` 参数，使控制不那么敏感。
 
-### Control with a remote control
+### 使用遥控器控制
 
-Before using remote SBUS-connected remote control, you need to calibrate it:
+在使用远程 SBUS 连接的遥控器之前，您需要校准它：
 
-1. Access the console using QGroundControl (recommended) or Serial Monitor.
-2. Type `cr` command and follow the instructions.
-3. Use the remote control to fly the drone!
+1. 使用 QGroundControl（推荐）或串口监视器访问控制台。
+2. 输入 `cr` 命令并按照说明操作。
+3. 使用遥控器飞行飞行器！
 
-### Control with a USB remote control
+### 使用 USB 遥控器控制
 
-If your drone doesn't have RC receiver installed, you can use USB remote control and QGroundControl app to fly it.
+如果您的飞行器没有安装 RC 接收器，您可以使用 USB 遥控器和 QGroundControl 应用程序来飞行它。
 
-1. Install [QGroundControl](https://docs.qgroundcontrol.com/master/en/qgc-user-guide/getting_started/download_and_install.html) app on your computer.
-2. Connect your USB remote control to the computer.
-3. Power up the drone.
-4. Connect your computer to the appeared `flix` Wi-Fi network (password: `flixwifi`).
-5. Launch QGroundControl app. It should connect and begin showing the drone's telemetry automatically.
-6. Go the the QGroundControl menu ⇒ *Vehicle Setup* ⇒ *Joystick*. Calibrate you USB remote control there.
-7. Use the USB remote control to fly the drone!
+1. 在计算机上安装 [QGroundControl](https://docs.qgroundcontrol.com/master/en/qgc-user-guide/getting_started/download_and_install.html)应用程序。
+2. 将 USB 遥控器连接到计算机。
+3. 为飞行器供电。
+4. 将计算机连接到出现的 `flix` Wi-Fi 网络（密码：`flixwifi`）。
+5. 启动 QGroundControl 应用程序。它应该连接并开始自动显示飞行器的遥测数据。
+6. 转到 QGroundControl 菜单 ⇒ *Vehicle Setup* ⇒ *Joystick*。在那里校准您的 USB 遥控器。
+7. 使用 USB 遥控器飞行飞行器！
 
-## Flight
+## 飞行
 
-For both virtual sticks and a physical joystick, the default control scheme is left stick for throttle and yaw and right stick for pitch and roll:
+对于虚拟摇杆和物理摇杆，默认控制方案是左摇杆控制油门和偏航，右摇杆控制俯仰和横滚：
 
 <img src="img/controls.svg" width="300">
 
-### Arming and disarming
+### 解锁和锁定
 
-To start the motors, you should **arm** the drone. To do that, move the left stick to the bottom right corner:
+要启动电机，您应该**解锁**飞行器。为此，将左摇杆移动到右下角：
 
 <img src="img/arming.svg" width="150">
 
-After that, the motors **will start spinning** at low speed, indicating that the drone is armed and ready to fly.
+之后，电机**将以低速开始旋转**，表示飞行器已解锁并准备好飞行。
 
-When finished flying, **disarm** the drone, moving the left stick to the bottom left corner:
+完成飞行后，**锁定**飞行器，将左摇杆移动到左下角：
 
 <img src="img/disarming.svg" width="150">
 
 > [!NOTE]
-> If something goes wrong, go to the [Troubleshooting](troubleshooting.md) article.
+> 如果出现问题，请参阅[故障排除](troubleshooting.md)文章。
 
-### Flight modes
+### 飞行模式
 
-Flight mode is changed using mode switch on the remote control (if configured) or using the console commands. The main flight mode is *STAB*.
+飞行模式使用遥控器上的模式开关（如果已配置）或使用控制台命令进行更改。主要飞行模式是 *STAB*。
 
 #### STAB
 
-In this mode, the drone stabilizes its attitude (orientation). The left stick controls throttle and yaw rate, the right stick controls pitch and roll angles.
+在此模式下，飞行器稳定其姿态（方向）。左摇杆控制油门和偏航率，右摇杆控制俯仰和横滚角度。
 
 > [!IMPORTANT]
-> The drone doesn't stabilize its position, so slight drift is possible. The pilot should compensate it manually.
+> 飞行器不稳定其位置，因此可能会有轻微漂移。飞行员应该手动补偿它。
 
 #### ACRO
 
-In this mode, the pilot controls the angular rates. This control method is difficult to fly and mostly used in FPV racing.
+在此模式下，飞行员控制角速率。这种控制方法难以飞行，主要用于 FPV 竞赛。
 
 #### RAW
 
-*RAW* mode disables all the stabilization, and the pilot inputs are mixed directly to the motors. The IMU sensor is not involved. This mode is intended for testing and demonstration purposes only, and basically the drone **cannot fly in this mode**.
+*RAW* 模式禁用所有稳定，飞行员输入直接混合到电机。不涉及 IMU 传感器。此模式仅用于测试和演示目的，基本上飞行器**无法在此模式下飞行**。
 
 #### AUTO
 
-In this mode, the pilot inputs are ignored (except the mode switch). The drone can be controlled using [pyflix](../tools/pyflix/) Python library, or by modifying the firmware to implement the needed behavior.
+在此模式下，忽略飞行员输入（模式开关除外）。可以使用 [pyflix](../tools/pyflix/) Python 库控制飞行器，或通过修改固件来实现所需行为。
 
-If the pilot moves the control sticks, the drone will switch back to *STAB* mode.
+如果飞行员移动控制摇杆，飞行器将切换回 *STAB* 模式。
 
-## Wi-Fi configuration
+## Wi-Fi 配置
 
-You can configure the Wi-Fi using parameters and console commands.
+您可以使用参数和控制台命令配置 Wi-Fi。
 
-The Wi-Fi mode is chosen using `WIFI_MODE` parameter in QGroundControl or in the console:
+Wi-Fi 模式在 QGroundControl 或控制台中使用 `WIFI_MODE` 参数选择：
 
-* `0` — Wi-Fi is disabled.
-* `1` — Access Point mode *(AP)* — the drone creates a Wi-Fi network.
-* `2` — Client mode *(STA)* — the drone connects to an existing Wi-Fi network.
-* `3` — *ESP-NOW (not implemented yet)*.
+* `0` — Wi-Fi 禁用。
+* `1` — 接入点模式 *(AP)* — 飞行器创建 Wi-Fi 网络。
+* `2` — 客户端模式 *(STA)* — 飞行器连接到现有的 Wi-Fi 网络。
+* `3` — *ESP-NOW（尚未实现）*。
 
 > [!WARNING]
-> Tests showed that Client mode may cause **additional delays** in remote control (due to retranslations), so it's generally not recommended.
+> 测试表明，客户端模式可能会导致遥控出现**额外延迟**（由于重新传输），因此通常不推荐。
 
-The SSID and password are configured using the `ap` and `sta` console commands:
+SSID 和密码使用 `ap` 和 `sta` 控制台命令配置：
 
 ```
 ap <ssid> <password>
 sta <ssid> <password>
 ```
 
-Example of configuring the Access Point mode:
+配置接入点模式的示例：
 
 ```
 ap my-flix-ssid mypassword123
 p WIFI_MODE 1
 ```
 
-Disabling Wi-Fi:
+禁用 Wi-Fi：
 
 ```
 p WIFI_MODE 0
 ```
 
-## Flight log
+## 飞行日志
 
-After the flight, you can download the flight log for analysis wirelessly. Use the following command on your computer for that:
+飞行后，您可以无线下载飞行日志进行分析。为此，请在计算机上运行以下命令：
 
 ```bash
 make log
 ```
 
-See more details about log analysis in the [log analysis](log.md) article.
+在[日志分析](log.md)文章中查看有关日志分析的更多详细信息。
